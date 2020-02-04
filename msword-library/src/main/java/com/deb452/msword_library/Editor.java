@@ -8,7 +8,6 @@ import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.View;
 
-
 import com.deb452.msword_library.components_classes.CustomEditText;
 import com.deb452.msword_library.models.EditorContent;
 import com.deb452.msword_library.models.EditorTextStyle;
