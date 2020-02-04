@@ -175,4 +175,5 @@
         android:maxWidth="20dp"
         android:maxHeight="20dp"
         android:src="@drawable/icon_erase" />
+
 </LinearLayout>
