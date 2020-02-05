@@ -220,7 +220,7 @@ public class Editor extends EditorCore {
     }
 
 
-        /*
+        /**
          *
          * Divider extension
          *
@@ -234,7 +234,7 @@ public class Editor extends EditorCore {
         getDividerExtensions().insertDivider(-1);
     }
 
-        /*
+        /**
          *
          * Image Extension
          *
@@ -259,7 +259,7 @@ public class Editor extends EditorCore {
     public void onImageUploadFailed(String imageId) {
         getImageExtensions().onPostUpload(null, imageId);
     }
-    /*
+    /**
      *
      *List Item extension
      *
@@ -271,7 +271,6 @@ public class Editor extends EditorCore {
     public void insertList(boolean isOrdered) {
         this.getListItemExtensions().insertlist(isOrdered);
     }
-
 
     @Override
     public boolean onKey(View v, int keyCode, KeyEvent event, CustomEditText editText) {

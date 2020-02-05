@@ -20,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.deb452.msword_library.Editor
 import com.deb452.msword_library.EditorListener
 import com.deb452.msword_library.models.EditorTextStyle
+import kotlinx.android.synthetic.main.toolbar_editor.*
 import top.defaults.colorpicker.ColorPickerPopup
 import top.defaults.colorpicker.ColorPickerPopup.ColorPickerObserver
 import java.io.IOException
@@ -95,7 +96,7 @@ class MainActivity : AppCompatActivity() {
                 .okTitle("Choose")
                 .cancelTitle("Cancel")
                 .showIndicator(true)
-                .showValue(true)
+                .showValue(false)
                 .build()
                 .show(findViewById(android.R.id.content), object : ColorPickerObserver {
                     override fun onColorPicked(color: Int) {
@@ -123,7 +124,7 @@ class MainActivity : AppCompatActivity() {
         editor!!.setEditorImageLayout(R.layout.tmpl_image_view)
         editor!!.setListItemLayout(R.layout.tmpl_list_item)
         //editor.setNormalTextSize(10);
-        // editor.setEditorTextColor("#FF3333");
+        //editor.setEditorTextColor("#FF3333");
         //editor.StartEditor();
         editor!!.editorListener = object : EditorListener {
             override fun onTextChanged(
@@ -131,9 +132,8 @@ class MainActivity : AppCompatActivity() {
                 text: Editable?
             ) { // Toast.makeText(EditorTestActivity.this, text, Toast.LENGTH_SHORT).show();
             }
-
             override fun onUpload(image: Bitmap?, uuid: String?) {
-                Toast.makeText(this@MainActivity, uuid, Toast.LENGTH_LONG).show()
+//                Toast.makeText(this@MainActivity, uuid, Toast.LENGTH_LONG).show()
 
                 editor!!.onImageUploadComplete(
                     "http://www.videogamesblogger.com/wp-content/uploads/2015/08/metal-gear-solid-5-the-phantom-pain-cheats-640x325.jpg",
@@ -154,17 +154,16 @@ class MainActivity : AppCompatActivity() {
         val text =
             "<h1 data-tag=\"input\" style=\"color:#c00000;\"><span style=\"color:#C00000;\">textline 1 a great time and I will branch office is closed on Sundays</span></h1><hr data-tag=\"hr\"/><p data-tag=\"input\" style=\"color:#000000;\">the only one that you have received the stream free and open minded person to discuss a business opportunity to discuss my background.</p><div data-tag=\"img\"><img src=\"http://www.videogamesblogger.com/wp-content/uploads/2015/08/metal-gear-solid-5-the-phantom-pain-cheats-640x325.jpg\" /><p data-tag=\"img-sub\" style=\"color:#FF0000;\" class=\"editor-image-subtitle\"><b>it is a great weekend and we will have the same to me that the same a great time</b></p></div><p data-tag=\"input\" style=\"color:#000000;\">I have a place where I have a great time and I will branch manager state to boast a new job in a few weeks and we can host or domain to get to know.</p><div data-tag=\"img\"><img src=\"http://www.videogamesblogger.com/wp-content/uploads/2015/08/metal-gear-solid-5-the-phantom-pain-cheats-640x325.jpg\" /><p data-tag=\"img-sub\" style=\"color:#5E5E5E;\" class=\"editor-image-subtitle\">the stream of water in a few weeks and we can host in the stream free and no ippo</p></div><p data-tag=\"input\" style=\"color:#000000;\">it is that I can get it done today will online at location and I am not a big difference to me so that we are headed <a href=\"www.google.com\">www.google.com</a> it was the only way I.</p><blockquote data-tag=\"input\" style=\"color:#000000;\">I have to do the negotiation and a half years old story and I am looking forward in a few days.</blockquote><p data-tag=\"input\" style=\"color:#000000;\">it is not a good day to get the latest version to blame it to the product the.</p><ol data-tag=\"ol\"><li data-tag=\"list-item-ol\"><span style=\"color:#000000;\">it is that I can send me your email to you and I am not able a great time and consideration I have to do the needful.</span></li><li data-tag=\"list-item-ol\"><span style=\"color:#000000;\">I have to do the needful and send to me and</span></li><li data-tag=\"list-item-ol\"><span style=\"color:#000000;\">I will be a while ago to a great weekend a great time with the same.</span></li></ol><p data-tag=\"input\" style=\"color:#000000;\">it was u can do to make an offer for a good day I u u have been working with a new job to the stream free and no.</p><p data-tag=\"input\" style=\"color:#000000;\">it was u disgraced our new home in time to get the chance I could not find a good idea for you have a great.</p><p data-tag=\"input\" style=\"color:#000000;\">I have to do a lot to do the same a great time and I have a great.</p><p data-tag=\"input\" style=\"color:#000000;\"></p>"
 
-        editor!!.render(text)
-        /*btnRender.setOnClickListener(View.OnClickListener {
-            *//*
-                    Retrieve the content as serialized, you could also say getContentAsHTML();
-                    *//*
-            val text = editor!!.contentAsSerialized
+
+        editor!!.render(editor!!.contentAsHTML)
+        btnRender.setOnClickListener(View.OnClickListener {
+            //Retrieve the content as serialized, you could also say getContentAsHTML();
+            val texts = editor!!.contentAsSerialized
             editor!!.contentAsHTML
             val intent = Intent(applicationContext, RenderTestActivity::class.java)
-            intent.putExtra("content", text)
+            intent.putExtra("content", texts)
             startActivity(intent)
-        })*/
+        })
     }
 
     private fun colorHex(color: Int): String? {
@@ -189,7 +188,8 @@ class MainActivity : AppCompatActivity() {
         resultCode: Int,
         data: Intent?
     ) {
-        if (requestCode == editor!!.PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.data != null) {
+        if (requestCode == editor!!.PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK &&
+            data != null && data.data != null) {
             val uri = data.data
             try {
                 val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, uri)

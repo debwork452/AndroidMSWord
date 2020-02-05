@@ -2,8 +2,11 @@ package com.deb452.msword_library.components_classes;
 
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.text.Editable;
 import android.text.Html;
@@ -39,6 +42,8 @@ import com.deb452.msword_library.models.TextSettings;
 
 import org.jsoup.nodes.Element;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -48,9 +53,10 @@ import java.util.TimerTask;
 import java.util.UUID;
 
 public class ImageExtensions extends EditorComponent {
+
     private EditorCore editorCore;
     private int editorImageLayout = R.layout.tmpl_image_view;
-    public RequestListener requestListener;
+    public RequestListener<Drawable> requestListener;
     public RequestOptions requestOptions;
     public DrawableTransitionOptions transition;
 
@@ -69,7 +75,7 @@ public class ImageExtensions extends EditorComponent {
             /**
              * for subtitle
              */
-            EditText textView =  view.findViewById(R.id.desc);
+            EditText textView = view.findViewById(R.id.desc);
             Node subTitleNode = getNodeInstance(textView);
             EditorControl descTag = (EditorControl) textView.getTag();
             subTitleNode.contentStyles = descTag.editorTextStyles;
@@ -79,7 +85,7 @@ public class ImageExtensions extends EditorComponent {
             node.childs = new ArrayList<>();
             node.childs.add(subTitleNode);
         }
-        return  node;
+        return node;
     }
 
     @Override
@@ -94,18 +100,18 @@ public class ImageExtensions extends EditorComponent {
     @Override
     public void renderEditorFromState(Node node, EditorContent content) {
         String path = node.content.get(0);
-        if(editorCore.getRenderType() == RenderType.Renderer) {
+        if (editorCore.getRenderType() == RenderType.Renderer) {
             loadImage(path, node.childs.get(0));
-        }else{
-            View layout = insertImage(null,path,editorCore.getChildCount(),node.childs.get(0).content.get(0), false);
-            componentsWrapper. getInputExtensions().applyTextSettings(node.childs.get(0), (TextView) layout.findViewById(R.id.desc));
+        } else {
+            View layout = insertImage(null, path, editorCore.getChildCount(), node.childs.get(0).content.get(0), false);
+            componentsWrapper.getInputExtensions().applyTextSettings(node.childs.get(0), (TextView) layout.findViewById(R.id.desc));
         }
     }
 
     @Override
     public Node buildNodeFromHTML(Element element) {
         HtmlTag tag = HtmlTag.valueOf(element.tagName().toLowerCase());
-        if(tag == HtmlTag.div){
+        if (tag == HtmlTag.div) {
             String dataTag = element.attr("data-tag");
             if (dataTag.equals("img")) {
                 Element img = element.child(0);
@@ -113,12 +119,12 @@ public class ImageExtensions extends EditorComponent {
                 String src = img.attr("src");
                 loadImage(src, descTag);
             }
-        }else {
+        } else {
             String src = element.attr("src");
-            if(element.children().size() > 0) {
+            if (element.children().size() > 0) {
                 Element descTag = element.child(1);
                 loadImage(src, descTag);
-            }else{
+            } else {
                 loadImageRemote(src, null);
             }
         }
@@ -148,17 +154,18 @@ public class ImageExtensions extends EditorComponent {
 
     public View insertImage(Bitmap image, String url, int index, String subTitle, boolean appendTextline) {
         boolean hasUploaded = false;
-        if(!TextUtils.isEmpty(url)) hasUploaded = true;
+        if (!TextUtils.isEmpty(url)) hasUploaded = true;
 
         // Render(getStateFromString());
         final View childLayout = ((Activity) editorCore.getContext()).getLayoutInflater().inflate(this.editorImageLayout, null);
-        ImageView imageView =  childLayout.findViewById(R.id.imageView);
-        final TextView lblStatus =  childLayout.findViewById(R.id.lblStatus);
+        ImageView imageView = childLayout.findViewById(R.id.imageView);
+        final TextView lblStatus = childLayout.findViewById(R.id.lblStatus);
         final CustomEditText desc = childLayout.findViewById(R.id.desc);
-        if(!TextUtils.isEmpty(url)){
+        if (!TextUtils.isEmpty(url)) {
             loadImageUsingLib(url, imageView);
-        }else {
+        } else {
             imageView.setImageBitmap(image);
+//            imageView.addObject(context, image);
         }
         final String uuid = generateUUID();
         if (index == -1) {
@@ -188,21 +195,35 @@ public class ImageExtensions extends EditorComponent {
         if (editorCore.isLastRow(childLayout) && appendTextline) {
             componentsWrapper.getInputExtensions().insertEditText(index + 1, null, null);
         }
-        if(!TextUtils.isEmpty(subTitle))
+        if (!TextUtils.isEmpty(subTitle))
             componentsWrapper.getInputExtensions().setText(desc, subTitle);
-        if(editorCore.getRenderType()== RenderType.Editor) {
+        if (editorCore.getRenderType() == RenderType.Editor) {
             BindEvents(childLayout);
-            if(!hasUploaded){
+            if (!hasUploaded) {
                 lblStatus.setVisibility(View.VISIBLE);
                 childLayout.findViewById(R.id.progress).setVisibility(View.VISIBLE);
                 editorCore.getEditorListener().onUpload(image, uuid);
             }
-        }else {
+        } else {
             desc.setEnabled(false);
             lblStatus.setVisibility(View.GONE);
         }
 
         return childLayout;
+    }
+
+    public static Bitmap getBitmapFromAsset(Context context, String filePath) {
+        AssetManager assetManager = context.getAssets();
+
+        InputStream inputStream;
+        Bitmap bitmap = null;
+        try {
+            inputStream = assetManager.open(filePath);
+            bitmap = BitmapFactory.decodeStream(inputStream);
+        } catch (IOException ignored) {
+        }
+
+        return bitmap;
     }
 
     private void showNextInputHint(int index) {
@@ -240,7 +261,7 @@ public class ImageExtensions extends EditorComponent {
         return y[y.length - 1] + sdt;
     }
 
-    public EditorControl createSubTitleTag(){
+    public EditorControl createSubTitleTag() {
         EditorControl subTag = editorCore.createTag(EditorType.IMG_SUB);
         subTag.textSettings = new TextSettings("#5E5E5E");
         return subTag;
@@ -251,6 +272,7 @@ public class ImageExtensions extends EditorComponent {
         control.path = path;
         return control;
     }
+
     /*
       /used by the renderer to render the image from the Node
     */
@@ -265,31 +287,31 @@ public class ImageExtensions extends EditorComponent {
 
     public void loadImage(String _path, Element node) {
         String desc = null;
-        if(node != null) {
+        if (node != null) {
             desc = node.html();
         }
         final View childLayout = loadImageRemote(_path, desc);
         CustomEditText text = childLayout.findViewById(R.id.desc);
-        if(node != null) {
+        if (node != null) {
             componentsWrapper.getInputExtensions().applyStyles(text, node);
         }
     }
 
-    public View loadImageRemote(String _path, String desc){
+    public View loadImageRemote(String _path, String desc) {
         final View childLayout = ((Activity) editorCore.getContext()).getLayoutInflater().inflate(this.editorImageLayout, null);
         ImageView imageView = childLayout.findViewById(R.id.imageView);
         CustomEditText text = childLayout.findViewById(R.id.desc);
 
         childLayout.setTag(createImageTag(_path));
         text.setTag(createSubTitleTag());
-        if(!TextUtils.isEmpty(desc)) {
+        if (!TextUtils.isEmpty(desc)) {
             componentsWrapper.getInputExtensions().setText(text, desc);
         }
         text.setEnabled(editorCore.getRenderType() == RenderType.Editor);
         loadImageUsingLib(_path, imageView);
         editorCore.getParentView().addView(childLayout);
 
-        if(editorCore.getRenderType()== RenderType.Editor) {
+        if (editorCore.getRenderType() == RenderType.Editor) {
             BindEvents(childLayout);
         }
 
@@ -297,40 +319,42 @@ public class ImageExtensions extends EditorComponent {
     }
 
 
-    public void loadImageUsingLib(String path, ImageView imageView){
-        if(requestListener == null){
+    public void loadImageUsingLib(String path, ImageView imageView) {
+        if (requestListener == null) {
             requestListener = new RequestListener<Drawable>() {
                 @Override
-                public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target,
+                                            boolean isFirstResource) {
                     return false;
                 }
 
                 @Override
-                public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target,
+                                               DataSource dataSource, boolean isFirstResource) {
                     return false;
                 }
             };
         }
 
-
-        if(placeholder == -1){
+        if (placeholder == -1) {
             placeholder = R.drawable.image_placeholder;
         }
 
-        if(errorBackground == -1){
+        if (errorBackground == -1) {
             errorBackground = R.drawable.error_background;
         }
 
-        if(requestOptions == null) {
+        if (requestOptions == null) {
             requestOptions = new RequestOptions();
         }
 
         requestOptions.placeholder(placeholder);
         requestOptions.error(errorBackground);
 
-        if(transition == null){
+        if (transition == null) {
             transition = DrawableTransitionOptions.withCrossFade().crossFade(1000);
         }
+
         Glide.with(imageView.getContext())
                 .load(path)
                 .transition(transition)
@@ -378,7 +402,6 @@ public class ImageExtensions extends EditorComponent {
     }
 
 
-
     private void BindEvents(final View layout) {
         final ImageView imageView = layout.findViewById(R.id.imageView);
         final View btn_remove = layout.findViewById(R.id.btn_remove);
@@ -403,9 +426,8 @@ public class ImageExtensions extends EditorComponent {
                     int height = view.getHeight();
                     if (event.getY() < paddingTop) {
                         editorCore.___onViewTouched(0, editorCore.getParentView().indexOfChild(layout));
-                    }
-                    else if (event.getY() > height - paddingBottom) {
-                        editorCore.___onViewTouched(1,  editorCore.getParentView().indexOfChild(layout));
+                    } else if (event.getY() > height - paddingBottom) {
+                        editorCore.___onViewTouched(1, editorCore.getParentView().indexOfChild(layout));
                     } else {
 
                     }
@@ -421,6 +443,7 @@ public class ImageExtensions extends EditorComponent {
                 btn_remove.setVisibility(View.VISIBLE);
             }
         });
+
         imageView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
