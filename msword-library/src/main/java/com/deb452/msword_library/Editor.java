@@ -172,7 +172,7 @@ public class Editor extends EditorCore {
     }
 
     public void insertLink(String link) {
-        getInputExtensions().insertLink(link);
+        getInputExtensions().insertLink(link, "");
     }
 
     public void appendText(Editable text) {

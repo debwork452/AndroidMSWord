@@ -559,17 +559,32 @@ public class InputExtensions extends EditorComponent {
 
     public void insertLink() {
         final AlertDialog.Builder inputAlert = new AlertDialog.Builder(this.editorCore.getContext());
+
+        LinearLayout linearLayout = new LinearLayout(this.editorCore.getContext());
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+
         inputAlert.setTitle("Add a Link");
+        final EditText userTitle = new EditText(this.editorCore.getContext());
         final EditText userInput = new EditText(this.editorCore.getContext());
         //dont forget to add some margins on the left and right to match the title
+        userTitle.setHint("Text to display");
         userInput.setHint("type the URL here");
+        userTitle.setInputType(InputType.TYPE_TEXT_VARIATION_WEB_EDIT_TEXT);
         userInput.setInputType(InputType.TYPE_TEXT_VARIATION_WEB_EDIT_TEXT);
-        inputAlert.setView(userInput);
+
+        linearLayout.addView(userTitle);
+        linearLayout.addView(userInput);
+
+//        inputAlert.setView(userTitle);
+//        inputAlert.setView(userInput);
+        inputAlert.setView(linearLayout);
+
         inputAlert.setPositiveButton("Insert", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String userInputValue = userInput.getText().toString();
-                insertLink(userInputValue);
+                String userTitleValue = userTitle.getText().toString();
+                insertLink(userInputValue, userTitleValue);
             }
         });
         inputAlert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -586,7 +601,7 @@ public class InputExtensions extends EditorComponent {
 
     }
 
-    public void insertLink(String uri) {
+    public void insertLink(String uri, String userTitleValue) {
         EditorType editorType = editorCore.getControlType(editorCore.getActiveView());
         EditText editText = (EditText) editorCore.getActiveView();
         if (editorType == EditorType.INPUT || editorType == EditorType.UL_LI) {
@@ -597,7 +612,7 @@ public class InputExtensions extends EditorComponent {
             Document _doc = Jsoup.parse(text);
             Elements x = _doc.select("p");
             String existing = x.get(0).html();
-            x.get(0).html(existing + " <a href='" + uri + "'>" + uri + "</a>");
+            x.get(0).html(existing + " <a href='" + uri + "'>" + userTitleValue + "</a>");
             Spanned toTrim = Html.fromHtml(x.toString());
             CharSequence trimmed = noTrailingwhiteLines(toTrim);
             editText.setText(trimmed);   //
