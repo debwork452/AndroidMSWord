@@ -9,7 +9,7 @@ import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-
+import android.net.Uri;
 import com.deb452.msword_library.Editor;
 import com.deb452.msword_library.EditorListener;
 import com.deb452.msword_library.models.EditorContent;
@@ -44,7 +44,7 @@ public class RenderTestActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onUpload(Bitmap image, String uuid) {
+            public void onUpload(Bitmap image, Uri uri, String uuid) {
 
             }
 
