@@ -3,6 +3,7 @@ package com.deb452.msword_library;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.text.Editable;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
@@ -101,6 +102,7 @@ public class Editor extends EditorCore {
 
     /**
      * size in sp
+     *
      * @param size
      */
     public void setH1TextSize(int size) {
@@ -113,6 +115,7 @@ public class Editor extends EditorCore {
 
     /**
      * size in sp
+     *
      * @param size
      */
     public void setH2TextSize(int size) {
@@ -125,6 +128,7 @@ public class Editor extends EditorCore {
 
     /**
      * size in sp
+     *
      * @param size
      */
     public void setH3TextSize(int size) {
@@ -133,15 +137,17 @@ public class Editor extends EditorCore {
 
     /**
      * size in sp
+     *
      * @param size
      */
-    public void setNormalTextSize(int size){
+    public void setNormalTextSize(int size) {
         getInputExtensions().setNormalTextSize(size);
     }
 
 
     /**
      * set dafault text color in hex
+     *
      * @param color
      */
     public void setEditorTextColor(String color) {
@@ -163,7 +169,7 @@ public class Editor extends EditorCore {
         getInputExtensions().UpdateTextStyle(style, null);
     }
 
-    public void updateTextColor(String color){
+    public void updateTextColor(String color) {
         getInputExtensions().updateTextColor(color, null);
     }
 
@@ -220,11 +226,9 @@ public class Editor extends EditorCore {
     }
 
 
-        /**
-         *
-         * Divider extension
-         *
-         */
+    /**
+     * Divider extension
+     */
 
     public void setDividerLayout(int layout) {
         this.getDividerExtensions().setDividerLayout(layout);
@@ -234,11 +238,9 @@ public class Editor extends EditorCore {
         getDividerExtensions().insertDivider(-1);
     }
 
-        /**
-         *
-         * Image Extension
-         *
-         */
+    /**
+     * Image Extension
+     */
 
     public void setEditorImageLayout(int layout) {
         this.getImageExtensions().setEditorImageLayout(layout);
@@ -248,8 +250,8 @@ public class Editor extends EditorCore {
         getImageExtensions().openImageGallery();
     }
 
-    public void insertImage(Bitmap bitmap) {
-        getImageExtensions().insertImage(bitmap,null, -1,null, true);
+    public void insertImage(Bitmap bitmap, Uri uri) {
+        getImageExtensions().insertImage(bitmap, uri, null, -1, null, true);
     }
 
     public void onImageUploadComplete(String url, String imageId) {
@@ -259,10 +261,9 @@ public class Editor extends EditorCore {
     public void onImageUploadFailed(String imageId) {
         getImageExtensions().onPostUpload(null, imageId);
     }
+
     /**
-     *
-     *List Item extension
-     *
+     * List Item extension
      */
     public void setListItemLayout(int layout) {
         this.getListItemExtensions().setListItemTemplate(layout);
@@ -284,7 +285,7 @@ public class Editor extends EditorCore {
         this.getInputExtensions().setLineSpacing(lineSpacing);
     }
 
-    public void setListItemLineSpacing(float lineSpacing){
+    public void setListItemLineSpacing(float lineSpacing) {
         this.getListItemExtensions().setLineSpacing(lineSpacing);
     }
 

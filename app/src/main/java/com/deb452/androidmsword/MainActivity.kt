@@ -8,6 +8,7 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
+import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Editable
@@ -100,11 +101,11 @@ class MainActivity : AppCompatActivity() {
                 .build()
                 .show(findViewById(android.R.id.content), object : ColorPickerObserver {
                     override fun onColorPicked(color: Int) {
-                       /* Toast.makeText(
-                            this@MainActivity,
-                            "picked" + colorHex(color),
-                            Toast.LENGTH_LONG
-                        ).show()*/
+                        /* Toast.makeText(
+                             this@MainActivity,
+                             "picked" + colorHex(color),
+                             Toast.LENGTH_LONG
+                         ).show()*/
                         editor!!.updateTextColor(colorHex(color))
                     }
 
@@ -132,7 +133,8 @@ class MainActivity : AppCompatActivity() {
                 text: Editable?
             ) { // Toast.makeText(EditorTestActivity.this, text, Toast.LENGTH_SHORT).show();
             }
-            override fun onUpload(image: Bitmap?, uuid: String?) {
+
+            override fun onUpload(image: Bitmap?, uri: Uri, uuid: String?) {
 //                Toast.makeText(this@MainActivity, uuid, Toast.LENGTH_LONG).show()
 
                 editor!!.onImageUploadComplete(
@@ -189,12 +191,13 @@ class MainActivity : AppCompatActivity() {
         data: Intent?
     ) {
         if (requestCode == editor!!.PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK &&
-            data != null && data.data != null) {
+            data != null && data.data != null
+        ) {
             val uri = data.data
             try {
                 val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, uri)
                 // Log.d(TAG, String.valueOf(bitmap));
-                editor!!.insertImage(bitmap)
+                editor!!.insertImage(bitmap, uri)
             } catch (e: IOException) {
                 Toast.makeText(applicationContext, e.message, Toast.LENGTH_SHORT).show()
                 e.printStackTrace()
