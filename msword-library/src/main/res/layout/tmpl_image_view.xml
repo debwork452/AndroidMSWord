@@ -11,9 +11,10 @@
         android:layout_width="match_parent"
         android:layout_height="180dp"
         android:adjustViewBounds="true"
+        android:contentDescription="@string/app_name"
         android:focusable="true"
         android:focusableInTouchMode="true"
-        android:scaleType="centerCrop"
+        android:scaleType="fitXY"
         android:src="@color/lightBackground" />
 
     <com.deb452.msword_library.components_classes.CustomEditText

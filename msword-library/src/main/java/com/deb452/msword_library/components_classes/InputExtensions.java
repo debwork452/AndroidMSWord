@@ -207,7 +207,11 @@ public class InputExtensions extends EditorComponent {
 
     public void setText(TextView textView, CharSequence text) {
         CharSequence toReplace = GetSanitizedHtml(text);
-        textView.setText(toReplace);
+        if (textView.getText().length() != 0) {
+            textView.setText(toReplace);
+        } else {
+            textView.setVisibility(View.GONE);
+        }
     }
 
 
