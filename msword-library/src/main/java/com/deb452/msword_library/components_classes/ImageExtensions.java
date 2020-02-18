@@ -57,7 +57,7 @@ public class ImageExtensions extends EditorComponent {
 
     private EditorCore editorCore;
     private int editorImageLayout = R.layout.tmpl_image_view;
-    public RequestListener<Drawable> requestListener;
+    public RequestListener requestListener;
     public RequestOptions requestOptions;
     public DrawableTransitionOptions transition;
 
@@ -166,7 +166,6 @@ public class ImageExtensions extends EditorComponent {
             loadImageUsingLib(url, imageView);
         } else {
             imageView.setImageBitmap(image);
-//            imageView.addObject(context, image);
         }
         final String uuid = generateUUID();
         if (index == -1) {
@@ -213,20 +212,6 @@ public class ImageExtensions extends EditorComponent {
         return childLayout;
     }
 
-    public static Bitmap getBitmapFromAsset(Context context, String filePath) {
-        AssetManager assetManager = context.getAssets();
-
-        InputStream inputStream;
-        Bitmap bitmap = null;
-        try {
-            inputStream = assetManager.open(filePath);
-            bitmap = BitmapFactory.decodeStream(inputStream);
-        } catch (IOException ignored) {
-        }
-
-        return bitmap;
-    }
-
     private void showNextInputHint(int index) {
         View view = editorCore.getParentView().getChildAt(index);
         EditorType type = editorCore.getControlType(view);
@@ -255,7 +240,7 @@ public class ImageExtensions extends EditorComponent {
     }
 
     public String generateUUID() {
-        DateFormat df = new SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault());
+        DateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
         String sdt = df.format(new Date(System.currentTimeMillis()));
         UUID x = UUID.randomUUID();
         String[] y = x.toString().split("-");
@@ -324,18 +309,17 @@ public class ImageExtensions extends EditorComponent {
         if (requestListener == null) {
             requestListener = new RequestListener<Drawable>() {
                 @Override
-                public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target,
-                                            boolean isFirstResource) {
+                public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                     return false;
                 }
 
                 @Override
-                public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target,
-                                               DataSource dataSource, boolean isFirstResource) {
+                public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
                     return false;
                 }
             };
         }
+
 
         if (placeholder == -1) {
             placeholder = R.drawable.image_placeholder;
@@ -355,7 +339,6 @@ public class ImageExtensions extends EditorComponent {
         if (transition == null) {
             transition = DrawableTransitionOptions.withCrossFade().crossFade(1000);
         }
-
         Glide.with(imageView.getContext())
                 .load(path)
                 .transition(transition)
@@ -434,7 +417,7 @@ public class ImageExtensions extends EditorComponent {
                     }
                     return false;
                 }
-                return true;
+                return true;//hmmmm....
             }
         });
 
@@ -444,7 +427,6 @@ public class ImageExtensions extends EditorComponent {
                 btn_remove.setVisibility(View.VISIBLE);
             }
         });
-
         imageView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
