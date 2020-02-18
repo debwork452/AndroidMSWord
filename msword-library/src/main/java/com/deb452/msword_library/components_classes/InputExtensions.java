@@ -166,7 +166,7 @@ public class InputExtensions extends EditorComponent {
         int count;
         TextView tv;
         HtmlTag tag = HtmlTag.valueOf(element.tagName().toLowerCase());
-        switch (tag) {
+        switch (tag){
             case h1:
             case h2:
             case h3:
@@ -183,7 +183,7 @@ public class InputExtensions extends EditorComponent {
                 text = element.html();
                 count = editorCore.getParentView().getChildCount();
                 tv = insertEditText(count, null, text);
-                UpdateTextStyle(EditorTextStyle.BLOCKQUOTE, tv);
+                UpdateTextStyle(EditorTextStyle.BLOCKQUOTE,tv);
                 applyStyles(tv, element);
         }
         return null;
@@ -207,11 +207,7 @@ public class InputExtensions extends EditorComponent {
 
     public void setText(TextView textView, CharSequence text) {
         CharSequence toReplace = GetSanitizedHtml(text);
-        if (textView.getText().length() != 0) {
-            textView.setText(toReplace);
-        } else {
-            textView.setVisibility(View.GONE);
-        }
+        textView.setText(toReplace);
     }
 
 
@@ -224,10 +220,10 @@ public class InputExtensions extends EditorComponent {
             Spanned __ = Html.fromHtml(text.toString());
             CharSequence toReplace = noTrailingwhiteLines(__);
             textView.setText(toReplace);
-            Linkify.addLinks(textView, Linkify.ALL);
+            Linkify.addLinks(textView,Linkify.ALL);
         }
 
-        if (this.lineSpacing != -1) {
+        if(this.lineSpacing != -1) {
             setLineSpacing(textView, this.lineSpacing);
         }
         return textView;
@@ -235,7 +231,7 @@ public class InputExtensions extends EditorComponent {
 
     public void setLineSpacing(TextView textView, float lineHeight) {
         int fontHeight = textView.getPaint().getFontMetricsInt(null);
-        textView.setLineSpacing(Utilities.INSTANCE.dpToPx(editorCore.getContext(), lineHeight) - fontHeight, 1);
+        textView.setLineSpacing(Utilities.INSTANCE.dpToPx(editorCore.getContext(), lineHeight)-fontHeight, 1);
     }
 
     public CustomEditText getNewEditTextInst(final String hint, CharSequence text) {
@@ -338,7 +334,7 @@ public class InputExtensions extends EditorComponent {
                 }
             }
         });
-        if (this.lineSpacing != -1) {
+        if(this.lineSpacing != -1) {
             setLineSpacing(editText, this.lineSpacing);
         }
         return editText;
@@ -357,8 +353,9 @@ public class InputExtensions extends EditorComponent {
         editText.setFocusableInTouchMode(true);
         editText.setTextSize(TypedValue.COMPLEX_UNIT_SP, NORMALTEXTSIZE);
         editText.setTextColor(Color.parseColor(this.DEFAULT_TEXT_COLOR));
-        editText.setPadding(0, 30, 0, 30);
+        editText.setPadding(0,30,0,30);
     }
+
 
 
     public TextView insertEditText(int position, String hint, CharSequence text) {
@@ -401,8 +398,8 @@ public class InputExtensions extends EditorComponent {
 
 
     private EditorControl reWriteTags(EditorControl tag, EditorTextStyle styleToAdd) {
-        EditorTextStyle[] tags = {EditorTextStyle.H1, EditorTextStyle.H2, EditorTextStyle.H3, EditorTextStyle.NORMAL};
-        for (EditorTextStyle style : tags)
+        EditorTextStyle[] tags = {EditorTextStyle.H1,EditorTextStyle.H2,EditorTextStyle.H3,EditorTextStyle.NORMAL};
+        for(EditorTextStyle style: tags)
             tag = editorCore.updateTagStyle(tag, style, Op.Delete);
         tag = editorCore.updateTagStyle(tag, styleToAdd, Op.Insert);
         return tag;
@@ -510,6 +507,7 @@ public class InputExtensions extends EditorComponent {
             int pTop = editText.getPaddingTop();
 
 
+
             if (isEditorTextStyleHeaders(style)) {
                 updateTextStyle(editText, style);
                 return;
@@ -539,19 +537,19 @@ public class InputExtensions extends EditorComponent {
                     editText.setPadding(0, pTop, pRight, pBottom);
                     editText.setTag(tag);
                 }
-            } else if (style == EditorTextStyle.BLOCKQUOTE) {
+            } else if( style == EditorTextStyle.BLOCKQUOTE){
                 LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) editText.getLayoutParams();
                 if (editorCore.containsStyle(tag.editorTextStyles, EditorTextStyle.BLOCKQUOTE)) {
                     tag = editorCore.updateTagStyle(tag, EditorTextStyle.BLOCKQUOTE, Op.Delete);
                     editText.setPadding(0, pTop, pRight, pBottom);
                     editText.setBackgroundDrawable(ContextCompat.getDrawable(this.editorCore.getContext(), R.drawable.invisible_edit_text));
                     params.setMargins(0, 0, 0, (int) editorCore.getContext().getResources().getDimension(R.dimen.edittext_margin_bottom));
-                } else {
-                    float marginExtra = editorCore.getContext().getResources().getDimension(R.dimen.edittext_margin_bottom) * 1.5f;
+                }else{
+                    float marginExtra =  editorCore.getContext().getResources().getDimension(R.dimen.edittext_margin_bottom)*1.5f;
                     tag = editorCore.updateTagStyle(tag, EditorTextStyle.BLOCKQUOTE, Op.Insert);
                     editText.setPadding(30, pTop, 30, pBottom);
                     editText.setBackgroundDrawable(editText.getContext().getResources().getDrawable(R.drawable.block_quote_background));
-                    params.setMargins(0, (int) marginExtra, 0, (int) marginExtra);
+                    params.setMargins(0, (int)marginExtra, 0, (int) marginExtra);
                 }
                 editText.setTag(tag);
             }
@@ -561,34 +559,20 @@ public class InputExtensions extends EditorComponent {
     }
 
 
+
     public void insertLink() {
         final AlertDialog.Builder inputAlert = new AlertDialog.Builder(this.editorCore.getContext());
-
-        LinearLayout linearLayout = new LinearLayout(this.editorCore.getContext());
-        linearLayout.setOrientation(LinearLayout.VERTICAL);
-
         inputAlert.setTitle("Add a Link");
-        final EditText userTitle = new EditText(this.editorCore.getContext());
         final EditText userInput = new EditText(this.editorCore.getContext());
         //dont forget to add some margins on the left and right to match the title
-        userTitle.setHint("Text to display");
         userInput.setHint("type the URL here");
-        userTitle.setInputType(InputType.TYPE_TEXT_VARIATION_WEB_EDIT_TEXT);
         userInput.setInputType(InputType.TYPE_TEXT_VARIATION_WEB_EDIT_TEXT);
-
-        linearLayout.addView(userTitle);
-        linearLayout.addView(userInput);
-
-//        inputAlert.setView(userTitle);
-//        inputAlert.setView(userInput);
-        inputAlert.setView(linearLayout);
-
+        inputAlert.setView(userInput);
         inputAlert.setPositiveButton("Insert", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String userInputValue = userInput.getText().toString();
-                String userTitleValue = userTitle.getText().toString();
-                insertLink(userInputValue, userTitleValue);
+                insertLink(userInputValue);
             }
         });
         inputAlert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -605,7 +589,7 @@ public class InputExtensions extends EditorComponent {
 
     }
 
-    public void insertLink(String uri, String userTitleValue) {
+    public void insertLink(String uri) {
         EditorType editorType = editorCore.getControlType(editorCore.getActiveView());
         EditText editText = (EditText) editorCore.getActiveView();
         if (editorType == EditorType.INPUT || editorType == EditorType.UL_LI) {
@@ -616,7 +600,7 @@ public class InputExtensions extends EditorComponent {
             Document _doc = Jsoup.parse(text);
             Elements x = _doc.select("p");
             String existing = x.get(0).html();
-            x.get(0).html(existing + " <a href='" + uri + "'>" + userTitleValue + "</a>");
+            x.get(0).html(existing + " <a href='" + uri + "'>" + uri + "</a>");
             Spanned toTrim = Html.fromHtml(x.toString());
             CharSequence trimmed = noTrailingwhiteLines(toTrim);
             editText.setText(trimmed);   //
@@ -697,7 +681,7 @@ public class InputExtensions extends EditorComponent {
         for (int i = 0; i < startIndex; i++) {
             View view = editorCore.getParentView().getChildAt(i);
             EditorType editorType = editorCore.getControlType(view);
-            if (editorType == EditorType.hr || editorType == EditorType.img || editorType == EditorType.map)
+            if (editorType == EditorType.hr || editorType == EditorType.img || editorType == EditorType.map )
                 continue;
             if (editorType == EditorType.INPUT) {
                 customEditText = (CustomEditText) view;
@@ -728,18 +712,19 @@ public class InputExtensions extends EditorComponent {
         }
     }
 
-    public boolean isInputTextAtPosition(int position) {
+    public boolean isInputTextAtPosition(int position){
         return editorCore.getControlType(editorCore.getParentView().getChildAt(position)) == EditorType.INPUT;
     }
+
 
 
     public void updateTextColor(String color, TextView editText) {
         try {
 
-            if (color.contains("rgb")) {
+            if(color.contains("rgb")){
                 Pattern c = Pattern.compile("rgb *\\( *([0-9]+), *([0-9]+), *([0-9]+) *\\)");
                 Matcher m = c.matcher(color);
-                if (m.matches()) {
+                if(m. matches()) {
                     int r = Integer.parseInt(m.group(1));
                     int g = Integer.parseInt(m.group(2));
                     int b = Integer.parseInt(m.group(3));
@@ -751,7 +736,7 @@ public class InputExtensions extends EditorComponent {
                 editText = (EditText) editorCore.getActiveView();
             }
             EditorControl tag = editorCore.getControlTag(editText);
-            if (tag.textSettings == null)
+            if(tag.textSettings==null)
                 tag.textSettings = new TextSettings(color);
             else
                 tag.textSettings.setTextColor(color);
@@ -764,8 +749,8 @@ public class InputExtensions extends EditorComponent {
 
     public void applyStyles(TextView editText, Element element) {
         Map<String, String> styles = componentsWrapper.getHtmlExtensions().getStyleMap(element);
-        if (styles.containsKey("color")) {
-            updateTextColor(styles.get("color"), editText);
+        if(styles.containsKey("color")){
+            updateTextColor(styles.get("color"),editText);
         }
     }
 
@@ -840,13 +825,13 @@ public class InputExtensions extends EditorComponent {
         return tmpl;
     }
 
-    public void applyTextSettings(Node node, TextView view) {
+    public void applyTextSettings(Node node, TextView view){
         if (node.contentStyles != null) {
             for (EditorTextStyle style : node.contentStyles) {
                 UpdateTextStyle(style, view);
             }
 
-            if (!TextUtils.isEmpty(node.textSettings.getTextColor())) {
+            if(!TextUtils.isEmpty(node.textSettings.getTextColor())) {
                 updateTextColor(node.textSettings.getTextColor(), view);
             }
         }

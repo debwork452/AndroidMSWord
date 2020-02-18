@@ -1,11 +1,13 @@
 package com.deb452.msword_library.components_classes;
 
 import android.content.Context;
+import android.text.InputType;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputConnectionWrapper;
+import android.widget.TextView;
 
 import com.google.android.material.textfield.TextInputEditText;
 

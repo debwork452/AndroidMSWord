@@ -47,7 +47,7 @@ public class ComponentsWrapper {
         return macroExtensions;
     }
 
-    public static class Builder {
+    public static  class Builder{
         private InputExtensions _inputExtensions;
         private DividerExtensions _dividerExtensions;
         private HTMLExtensions _htmlExtensions;
@@ -56,42 +56,42 @@ public class ComponentsWrapper {
         private MapExtensions _mapExtensions;
         private MacroExtensions _macroExtensions;
 
-        public Builder inputExtensions(InputExtensions inputExtensions) {
+        public Builder inputExtensions(InputExtensions inputExtensions){
             this._inputExtensions = inputExtensions;
             return this;
         }
 
-        public Builder htmlExtensions(HTMLExtensions htmlExtensions) {
+        public Builder htmlExtensions(HTMLExtensions htmlExtensions){
             this._htmlExtensions = htmlExtensions;
             return this;
         }
 
-        public Builder listItemExtensions(ListItemExtensions listItemExtensions) {
+        public Builder listItemExtensions(ListItemExtensions listItemExtensions){
             this._listItemExtensions = listItemExtensions;
             return this;
         }
 
-        public Builder mapExtensions(MapExtensions mapExtensions) {
+        public Builder mapExtensions(MapExtensions mapExtensions){
             this._mapExtensions = mapExtensions;
             return this;
         }
 
-        public Builder imageExtensions(ImageExtensions imageExtensions) {
+        public Builder imageExtensions(ImageExtensions imageExtensions){
             this._imageExtensions = imageExtensions;
             return this;
         }
 
-        public Builder macroExtensions(MacroExtensions macroExtensions) {
+        public Builder macroExtensions(MacroExtensions macroExtensions){
             this._macroExtensions = macroExtensions;
             return this;
         }
 
-        public Builder dividerExtensions(DividerExtensions dividerExtensions) {
+        public Builder dividerExtensions(DividerExtensions dividerExtensions){
             this._dividerExtensions = dividerExtensions;
             return this;
         }
 
-        public ComponentsWrapper build() {
+        public ComponentsWrapper build(){
             return new ComponentsWrapper(
                     this._inputExtensions,
                     this._dividerExtensions,

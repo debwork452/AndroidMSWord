@@ -27,7 +27,7 @@ public class RenderTestActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         String content = getIntent().getStringExtra("content");
 
-        Editor renderer = (Editor) findViewById(R.id.renderer);
+        Editor renderer = findViewById(R.id.renderer);
         Map<Integer, String> headingTypeface = getHeadingTypeface();
         Map<Integer, String> contentTypeface = getContentface();
         renderer.setHeadingTypeface(headingTypeface);
@@ -36,7 +36,7 @@ public class RenderTestActivity extends AppCompatActivity {
         renderer.setEditorImageLayout(R.layout.tmpl_image_view);
         renderer.setListItemLayout(R.layout.tmpl_list_item);
 
-        EditorContent deserialized = renderer.getContentDeserialized(content);
+//        EditorContent deserialized = renderer.getContentDeserialized(content);
         renderer.setEditorListener(new EditorListener() {
             @Override
             public void onTextChanged(EditText editText, Editable text) {
@@ -53,7 +53,7 @@ public class RenderTestActivity extends AppCompatActivity {
                 return getLayoutInflater().inflate(R.layout.layout_authored_by, null);
             }
         });
-        renderer.render(deserialized);
+        renderer.render(content);
     }
 
     public Map<Integer, String> getHeadingTypeface() {
